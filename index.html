@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#0a0e14">
 <title>Argus — the world in real time</title>
 <meta name="description" content="Argus: earthquakes, weather, rain radar, satellite, space weather and flagged air traffic. The world in real time, on one page.">
+<link rel="canonical" href="https://gillis-glitch.github.io/argus/">
+<meta property="og:title" content="Argus — the world in real time">
+<meta property="og:description" content="Live map with rain radar, earthquakes, flagged air traffic, space weather and station boards for 4 rail networks. Free, no ads, no tracking.">
+<meta property="og:url" content="https://gillis-glitch.github.io/argus/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Argus">
+<meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root{
@@ -137,14 +144,11 @@
   <section class="s-trn" id="p-trn">
     <h2><span id="h-trn"></span> <time id="t-trn"></time></h2>
     <div class="selrow" style="margin-top:8px">
-      <button data-c="it" class="on">🇮🇹 IT</button>
-      <button data-c="ch">🇨🇭 CH</button>
-      <button data-c="be">🇧🇪 BE</button>
+      <span class="sub" id="trn-net" style="align-self:center">🇮🇹</span>
       <button id="trn-mode" style="margin-left:auto"></button>
     </div>
-    <input id="trn-it-q" type="text" list="it-stations" value="Bologna Centrale" enterkeyhint="search">
+    <input id="trn-q" type="text" list="it-stations" value="Bologna Centrale" enterkeyhint="search">
     <datalist id="it-stations"></datalist>
-    <input id="trn-q" type="text" style="display:none" enterkeyhint="search">
     <div class="sub" id="trn-sub" style="margin-top:8px">…</div>
     <div class="list" id="trn-list"></div>
   </section>
@@ -208,7 +212,7 @@ it:{sub:"IL MONDO IN TEMPO REALE",search:"Cerca una località… (Invio)",here:"
   pcMax:"criticità massima",pcZones:"zone interessate",pcLink:"Dettaglio ufficiale ↗",
   pcNA:"Bollettino automatico non disponibile — consulta il",pcOff:"bollettino ufficiale ↗",
   geoErr:"Posizione non disponibile: controlla i permessi del browser.",notFound:"Località non trovata.",searchErr:"Ricerca non disponibile al momento.",myArea:"La tua zona",
-  hTrn:"Treni — tabellone di stazione",dep:"Partenze ⇄",arr:"Arrivi ⇄",trnPh:"Stazione… (Invio)",other:"Altra stazione (codice RFI)…",onTime:"in orario",trnLink:"tabellone ufficiale ↗",
+  hTrn:"Treni — tabellone di stazione",dep:"Partenze ⇄",arr:"Arrivi ⇄",trnPh:"Stazione… (Invio)",other:"Altra stazione (codice RFI)…",onTime:"in orario",trnLink:"tabellone ufficiale ↗",noNet:"Nessuna fonte ferroviaria aperta per questa ricerca — oggi copriamo Italia, Svizzera, Belgio e Finlandia.",
   ft:"Pagina statica senza server: i dati sono richiesti direttamente dal tuo browser alle fonti. Statistiche visite anonime, senza cookie.",
   wmo:wm(["sereno","quasi sereno","parzialmente nuvoloso","coperto","nebbia","nebbia con brina","pioviggine debole","pioviggine","pioviggine intensa","pioggia debole","pioggia","pioggia forte","pioggia gelata","pioggia gelata forte","neve debole","neve","neve forte","nevischio","rovesci deboli","rovesci","rovesci violenti","rovesci di neve","rovesci di neve forti","temporale","temporale con grandine","temporale forte con grandine"])},
 en:{sub:"THE WORLD IN REAL TIME",search:"Search a place… (Enter)",here:"📍 Here",
@@ -225,7 +229,7 @@ en:{sub:"THE WORLD IN REAL TIME",search:"Search a place… (Enter)",here:"📍 H
   pcMax:"max criticality",pcZones:"zones affected",pcLink:"Official detail ↗",
   pcNA:"Automatic bulletin unavailable — see the",pcOff:"official bulletin ↗",
   geoErr:"Location unavailable: check browser permissions.",notFound:"Place not found.",searchErr:"Search unavailable right now.",myArea:"Your area",
-  hTrn:"Trains — station board",dep:"Departures ⇄",arr:"Arrivals ⇄",trnPh:"Station… (Enter)",other:"Other station (RFI code)…",onTime:"on time",trnLink:"official board ↗",
+  hTrn:"Trains — station board",dep:"Departures ⇄",arr:"Arrivals ⇄",trnPh:"Station… (Enter)",other:"Other station (RFI code)…",onTime:"on time",trnLink:"official board ↗",noNet:"No open rail source found for this search — currently covering Italy, Switzerland, Belgium and Finland.",
   ft:"Static page, no server: your browser fetches data straight from the sources. Anonymous, cookie-free visit stats.",
   wmo:wm(["clear","mostly clear","partly cloudy","overcast","fog","rime fog","light drizzle","drizzle","heavy drizzle","light rain","rain","heavy rain","freezing rain","heavy freezing rain","light snow","snow","heavy snow","snow grains","light showers","showers","violent showers","snow showers","heavy snow showers","thunderstorm","thunderstorm with hail","severe thunderstorm with hail"])},
 es:{sub:"EL MUNDO EN TIEMPO REAL",search:"Busca un lugar… (Intro)",here:"📍 Aquí",
@@ -242,7 +246,7 @@ es:{sub:"EL MUNDO EN TIEMPO REAL",search:"Busca un lugar… (Intro)",here:"📍 
   pcMax:"criticidad máxima",pcZones:"zonas afectadas",pcLink:"Detalle oficial ↗",
   pcNA:"Boletín automático no disponible — consulta el",pcOff:"boletín oficial ↗",
   geoErr:"Ubicación no disponible: revisa los permisos del navegador.",notFound:"Lugar no encontrado.",searchErr:"Búsqueda no disponible por ahora.",myArea:"Tu zona",
-  hTrn:"Trenes — panel de estación",dep:"Salidas ⇄",arr:"Llegadas ⇄",trnPh:"Estación… (Intro)",other:"Otra estación (código RFI)…",onTime:"puntual",trnLink:"panel oficial ↗",
+  hTrn:"Trenes — panel de estación",dep:"Salidas ⇄",arr:"Llegadas ⇄",trnPh:"Estación… (Intro)",other:"Otra estación (código RFI)…",onTime:"puntual",trnLink:"panel oficial ↗",noNet:"No hay fuente ferroviaria abierta para esta búsqueda — por ahora cubrimos Italia, Suiza, Bélgica y Finlandia.",
   ft:"Página estática, sin servidor: tu navegador pide los datos directamente a las fuentes. Estadísticas de visitas anónimas, sin cookies.",
   wmo:wm(["despejado","mayormente despejado","parcialmente nublado","cubierto","niebla","niebla con escarcha","llovizna débil","llovizna","llovizna intensa","lluvia débil","lluvia","lluvia fuerte","lluvia helada","lluvia helada fuerte","nieve débil","nieve","nieve fuerte","cinarra","chubascos débiles","chubascos","chubascos violentos","chubascos de nieve","chubascos de nieve fuertes","tormenta","tormenta con granizo","tormenta fuerte con granizo"])},
 ru:{sub:"МИР В РЕАЛЬНОМ ВРЕМЕНИ",search:"Найдите место… (Enter)",here:"📍 Здесь",
@@ -259,7 +263,7 @@ ru:{sub:"МИР В РЕАЛЬНОМ ВРЕМЕНИ",search:"Найдите ме�
   pcMax:"макс. уровень",pcZones:"затронутых зон",pcLink:"Официальные данные ↗",
   pcNA:"Автоматический бюллетень недоступен — см.",pcOff:"официальный бюллетень ↗",
   geoErr:"Геопозиция недоступна: проверьте разрешения браузера.",notFound:"Место не найдено.",searchErr:"Поиск сейчас недоступен.",myArea:"Ваш район",
-  hTrn:"Поезда — табло станции",dep:"Отправление ⇄",arr:"Прибытие ⇄",trnPh:"Станция… (Enter)",other:"Другая станция (код RFI)…",onTime:"по расписанию",trnLink:"официальное табло ↗",
+  hTrn:"Поезда — табло станции",dep:"Отправление ⇄",arr:"Прибытие ⇄",trnPh:"Станция… (Enter)",other:"Другая станция (код RFI)…",onTime:"по расписанию",trnLink:"официальное табло ↗",noNet:"Открытый источник для этой станции не найден — пока поддерживаются Италия, Швейцария, Бельгия и Финляндия.",
   ft:"Статическая страница без сервера: браузер запрашивает данные напрямую у источников. Анонимная статистика посещений, без cookie.",
   wmo:wm(["ясно","малооблачно","переменная облачность","пасмурно","туман","туман с изморозью","слабая морось","морось","сильная морось","слабый дождь","дождь","сильный дождь","ледяной дождь","сильный ледяной дождь","слабый снег","снег","сильный снег","снежные зёрна","слабые ливни","ливни","сильные ливни","снежные ливни","сильные снежные ливни","гроза","гроза с градом","сильная гроза с градом"])},
 zh:{sub:"实时世界",search:"搜索地点…（回车）",here:"📍 此处",
@@ -276,7 +280,7 @@ zh:{sub:"实时世界",search:"搜索地点…（回车）",here:"📍 此处",
   pcMax:"最高等级",pcZones:"个受影响区域",pcLink:"官方详情 ↗",
   pcNA:"自动公报不可用——请查看",pcOff:"官方公报 ↗",
   geoErr:"无法获取位置：请检查浏览器权限。",notFound:"未找到该地点。",searchErr:"搜索暂不可用。",myArea:"您的区域",
-  hTrn:"列车 — 车站时刻牌",dep:"出发 ⇄",arr:"到达 ⇄",trnPh:"车站…（回车）",other:"其他车站（RFI代码）…",onTime:"准点",trnLink:"官方时刻牌 ↗",
+  hTrn:"列车 — 车站时刻牌",dep:"出发 ⇄",arr:"到达 ⇄",trnPh:"车站…（回车）",other:"其他车站（RFI代码）…",onTime:"准点",trnLink:"官方时刻牌 ↗",noNet:"未找到该车站的开放数据源——目前支持意大利、瑞士、比利时和芬兰。",
   ft:"静态页面，无服务器：数据由您的浏览器直接向来源请求。匿名访问统计，不使用Cookie。",
   wmo:wm(["晴","大部晴朗","局部多云","阴天","雾","雾凇","小毛毛雨","毛毛雨","强毛毛雨","小雨","雨","大雨","冻雨","强冻雨","小雪","雪","大雪","米雪","小阵雨","阵雨","强阵雨","阵雪","强阵雪","雷暴","雷暴伴冰雹","强雷暴伴冰雹"])}
 };
@@ -315,7 +319,7 @@ function applyLang(){
   $("h-met").textContent=t.hMet; $("h-sis").textContent=t.hSis; $("h-aer").textContent=t.hAer;
   $("h-spc").textContent=t.hSpc; $("h-pc").textContent=t.hPc;
   $("h-trn").textContent=t.hTrn; $("trn-mode").textContent=trn.mode==="arr"?t.arr:t.dep;
-  $("trn-q").placeholder=t.trnPh; $("trn-it-q").placeholder=t.trnPh;
+  $("trn-q").placeholder=t.trnPh;
   $("k-feels").textContent=t.feels; $("k-wind").textContent=t.wind; $("k-hum").textContent=t.hum;
   $("k-rain").textContent=t.rain3; $("k-swind").textContent=t.swind; $("k-sdens").textContent=t.sdens;
   $("ft").textContent=t.ft;
@@ -546,8 +550,9 @@ $("q").addEventListener("keydown",async e=>{
 /* ───────────────────────── treni ───────────────────────── */
 const WORKER="https://argus-proxy.gillis.workers.dev";
 const IT_STATIONS={683:"Bologna Centrale",942:"Bologna C.le AV",672:"Bologna Borgo Panigale",1709:"Bologna Mazzini"};
-let trn={c:"it", mode:"dep", it:683, ch:"Zürich HB", be:"Bruxelles-Central"};
-let IT_MAP=null, trnItName="Bologna Centrale";
+const NET_FLAG={it:"🇮🇹",ch:"🇨🇭",be:"🇧🇪",fi:"🇫🇮"};
+let trn={mode:"dep", net:"it", name:"Bologna Centrale", id:683};
+let IT_MAP=null, FI_MAP=null, FI_NAMES=null;
 
 async function loadStazioni(){
   try{ IT_MAP=await j("stazioni.json"); }
@@ -563,23 +568,56 @@ function itResolve(txt){
   const k=keys.find(x=>x.startsWith(u))||keys.find(x=>x.includes(u));
   return k?[k,IT_MAP[k]]:null;
 }
-function itPick(){
-  const r=itResolve($("trn-it-q").value);
-  if(!r){alert(T().notFound);return;}
-  trnItName=r[0]; trn.it=r[1]; $("trn-it-q").value=r[0];
-  loadTreni();
+async function fiEnsure(){
+  if(FI_MAP) return;
+  const d=await j("https://rata.digitraffic.fi/api/v1/metadata/stations");
+  FI_MAP={}; FI_NAMES={};
+  for(const s of d){
+    if(!s.passengerTraffic) continue;
+    const nome=s.stationName.replace(/ asema$/i,"");
+    FI_MAP[nome.toUpperCase()]=s.stationShortCode;
+    FI_NAMES[s.stationShortCode]=nome;
+  }
 }
-$("trn-it-q").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.target.blur();itPick();} });
-$("trn-it-q").addEventListener("change",itPick);
+function fiResolve(u){
+  if(FI_MAP[u]) return FI_MAP[u];
+  const keys=Object.keys(FI_MAP);
+  const k=keys.find(x=>x.startsWith(u))||keys.find(x=>x.includes(u));
+  return k?FI_MAP[k]:null;
+}
+
+/* campo unico: capisce da solo a quale rete appartiene la stazione */
+async function trnSearch(){
+  const t=T(), q=$("trn-q").value.trim();
+  if(!q) return;
+  $("trn-sub").textContent="…";
+  const it=itResolve(q);                                   // 1) Italia
+  if(it){ trn.net="it"; trn.name=it[0]; trn.id=it[1]; $("trn-q").value=it[0]; return loadTreni(); }
+  try{                                                     // 2) Svizzera
+    const d=await j(`https://transport.opendata.ch/v1/stationboard?station=${encodeURIComponent(q)}&limit=10&type=departure`);
+    if(d.stationboard&&d.stationboard.length){ trn.net="ch"; trn.name=(d.station&&d.station.name)||q; return loadTreni(); }
+  }catch(e){}
+  try{                                                     // 3) Belgio
+    const d=await j(`https://api.irail.be/liveboard/?station=${encodeURIComponent(q)}&format=json&lang=en&arrdep=departure`);
+    if(d.departures&&d.departures.departure&&d.departures.departure.length){ trn.net="be"; trn.name=(d.stationinfo&&d.stationinfo.name)||q; return loadTreni(); }
+  }catch(e){}
+  try{                                                     // 4) Finlandia
+    await fiEnsure();
+    const code=fiResolve(q.toUpperCase());
+    if(code){ trn.net="fi"; trn.id=code; trn.name=FI_NAMES[code]; $("trn-q").value=FI_NAMES[code]; return loadTreni(); }
+  }catch(e){}
+  $("trn-list").innerHTML=`<div class="err">${t.noNet}</div>`;
+  $("trn-sub").textContent="—"; lamp("L-trn","","n/d");
+}
 
 async function loadTreni(){
   const t=T(), L=$("trn-list"), S=$("trn-sub");
   try{
-    let rows=[], title="", link="";
-    if(trn.c==="it"){
-      const arr = trn.mode==="arr";
-      link=`https://iechub.rfi.it/ArriviPartenze/ArrivalsDepartures/Monitor?placeId=${trn.it}&arrivals=${arr}`;
-      const r=await fetch(`${WORKER}/rfi/Monitor?placeId=${trn.it}&arrivals=${arr}`,{cache:"no-store"});
+    let rows=[], link="";
+    if(trn.net==="it"){
+      const arr=trn.mode==="arr";
+      link=`https://iechub.rfi.it/ArriviPartenze/ArrivalsDepartures/Monitor?placeId=${trn.id}&arrivals=${arr}`;
+      const r=await fetch(`${WORKER}/rfi/Monitor?placeId=${trn.id}&arrivals=${arr}`,{cache:"no-store"});
       if(!r.ok) throw new Error(r.status);
       const doc=new DOMParser().parseFromString(await r.text(),"text/html");
       for(const row of doc.querySelectorAll("tr")){
@@ -590,27 +628,41 @@ async function loadTreni(){
         rows.push({num:c[i-2]||"",dest:c[i-1]||"",time:c[i],
           dly:parseInt((raw.match(/\d+/)||[0])[0],10)||0,raw,plat:c[i+2]||""});
       }
-      title=trnItName;
-    }else if(trn.c==="ch"){
-      const q=$("trn-q").value.trim()||trn.ch; trn.ch=q;
-      const d=await j(`https://transport.opendata.ch/v1/stationboard?station=${encodeURIComponent(q)}&limit=10&type=${trn.mode==="arr"?"arrival":"departure"}`);
+    }else if(trn.net==="ch"){
+      const d=await j(`https://transport.opendata.ch/v1/stationboard?station=${encodeURIComponent(trn.name)}&limit=10&type=${trn.mode==="arr"?"arrival":"departure"}`);
       rows=(d.stationboard||[]).map(e=>({
         num:(e.category||"")+(e.number||""), dest:e.to||"",
         time:new Date(e.stop.departure||e.stop.arrival).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
         dly:e.stop.delay||0, raw:"", plat:e.stop.platform||""}));
-      title=(d.station&&d.station.name)||q;
-    }else{
-      const q=$("trn-q").value.trim()||trn.be; trn.be=q;
-      const d=await j(`https://api.irail.be/liveboard/?station=${encodeURIComponent(q)}&format=json&lang=en&arrdep=${trn.mode==="arr"?"arrival":"departure"}`);
+    }else if(trn.net==="be"){
+      const d=await j(`https://api.irail.be/liveboard/?station=${encodeURIComponent(trn.name)}&format=json&lang=en&arrdep=${trn.mode==="arr"?"arrival":"departure"}`);
       const list=trn.mode==="arr"?(d.arrivals&&d.arrivals.arrival):(d.departures&&d.departures.departure);
       rows=(list||[]).map(e=>({
         num:(e.vehicleinfo&&e.vehicleinfo.shortname)||"", dest:e.station||"",
         time:new Date((+e.time)*1000).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
         dly:Math.round((+e.delay||0)/60), raw:"", plat:e.platform&&e.platform!=="?"?e.platform:""}));
-      title=(d.stationinfo&&d.stationinfo.name)||q;
+    }else{ /* fi */
+      const dep=trn.mode!=="arr";
+      const d=await j(`https://rata.digitraffic.fi/api/v1/live-trains/station/${trn.id}?arrived_trains=0&departed_trains=0&arriving_trains=${dep?0:15}&departing_trains=${dep?15:0}&include_nonstopping=false`);
+      const adesso=Date.now();
+      for(const tr2 of (Array.isArray(d)?d:[])){
+        const tt=tr2.timeTableRows||[];
+        const my=tt.find(r2=>r2.stationShortCode===trn.id&&r2.type===(dep?"DEPARTURE":"ARRIVAL"));
+        if(!my) continue;
+        const quando=new Date(my.liveEstimateTime||my.scheduledTime).getTime();
+        if(quando<adesso-5*60000) continue;
+        const capo=dep?tt[tt.length-1]:tt[0];
+        rows.push({num:(tr2.trainType||"")+(tr2.trainNumber||""),
+          dest:(FI_NAMES&&FI_NAMES[capo.stationShortCode])||capo.stationShortCode,
+          time:new Date(my.scheduledTime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
+          dly:my.differenceInMinutes||0, raw:my.cancelled?"CANC":"",
+          plat:my.commercialTrack||"", _ts:new Date(my.scheduledTime).getTime()});
+      }
+      rows.sort((a,b)=>a._ts-b._ts);
     }
     rows=rows.slice(0,10);
-    S.innerHTML=title+(link?` · <a href="${link}" target="_blank" rel="noopener">${t.trnLink}</a>`:"");
+    $("trn-net").textContent=NET_FLAG[trn.net]||"";
+    S.innerHTML=`${NET_FLAG[trn.net]||""} ${trn.name}`+(link?` · <a href="${link}" target="_blank" rel="noopener">${t.trnLink}</a>`:"");
     L.innerHTML=rows.map(r=>{
       const canc=/canc|soppr/i.test(r.raw);
       const col=canc||r.dly>=15?"var(--seismic)":r.dly>=5?"var(--amber)":"var(--ok)";
@@ -625,21 +677,13 @@ async function loadTreni(){
     stamp("t-trn");
   }catch(e){ L.innerHTML=`<div class="err">${t.err}</div>`; S.textContent="—"; lamp("L-trn","","n/d"); }
 }
-document.querySelectorAll("#p-trn [data-c]").forEach(b=>b.onclick=()=>{
-  trn.c=b.dataset.c;
-  document.querySelectorAll("#p-trn [data-c]").forEach(x=>x.classList.toggle("on",x===b));
-  const it=trn.c==="it";
-  $("trn-it-q").style.display=it?"":"none";
-  $("trn-q").style.display=it?"none":"";
-  if(!it) $("trn-q").value=trn[trn.c];
-  loadTreni();
-});
 $("trn-mode").onclick=()=>{
   trn.mode=trn.mode==="dep"?"arr":"dep";
   $("trn-mode").textContent=trn.mode==="arr"?T().arr:T().dep;
   loadTreni();
 };
-$("trn-q").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.target.blur();loadTreni();} });
+$("trn-q").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.target.blur();trnSearch();} });
+$("trn-q").addEventListener("change",trnSearch);
 
 /* ───────────────────────── avvio + cicli ───────────────────────── */
 function schedule(fn,sec,key){ fn(); timers[key]=setInterval(()=>{ if(!document.hidden) fn(); },sec*1000); }
