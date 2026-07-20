@@ -142,13 +142,8 @@
       <button data-c="be">🇧🇪 BE</button>
       <button id="trn-mode" style="margin-left:auto"></button>
     </div>
-    <select id="trn-sel">
-      <option value="683" selected>Bologna Centrale</option>
-      <option value="942">Bologna C.le AV (sotterranea)</option>
-      <option value="672">Bologna Borgo Panigale</option>
-      <option value="1709">Bologna Mazzini</option>
-      <option value="x" id="trn-other"></option>
-    </select>
+    <input id="trn-it-q" type="text" list="it-stations" value="Bologna Centrale" enterkeyhint="search">
+    <datalist id="it-stations"></datalist>
     <input id="trn-q" type="text" style="display:none" enterkeyhint="search">
     <div class="sub" id="trn-sub" style="margin-top:8px">…</div>
     <div class="list" id="trn-list"></div>
@@ -320,7 +315,7 @@ function applyLang(){
   $("h-met").textContent=t.hMet; $("h-sis").textContent=t.hSis; $("h-aer").textContent=t.hAer;
   $("h-spc").textContent=t.hSpc; $("h-pc").textContent=t.hPc;
   $("h-trn").textContent=t.hTrn; $("trn-mode").textContent=trn.mode==="arr"?t.arr:t.dep;
-  $("trn-q").placeholder=t.trnPh; $("trn-other").textContent=t.other;
+  $("trn-q").placeholder=t.trnPh; $("trn-it-q").placeholder=t.trnPh;
   $("k-feels").textContent=t.feels; $("k-wind").textContent=t.wind; $("k-hum").textContent=t.hum;
   $("k-rain").textContent=t.rain3; $("k-swind").textContent=t.swind; $("k-sdens").textContent=t.sdens;
   $("ft").textContent=t.ft;
@@ -552,6 +547,30 @@ $("q").addEventListener("keydown",async e=>{
 const WORKER="https://argus-proxy.gillis.workers.dev";
 const IT_STATIONS={683:"Bologna Centrale",942:"Bologna C.le AV",672:"Bologna Borgo Panigale",1709:"Bologna Mazzini"};
 let trn={c:"it", mode:"dep", it:683, ch:"Zürich HB", be:"Bruxelles-Central"};
+let IT_MAP=null, trnItName="Bologna Centrale";
+
+async function loadStazioni(){
+  try{ IT_MAP=await j("stazioni.json"); }
+  catch(e){ IT_MAP=Object.fromEntries(Object.entries(IT_STATIONS).map(([id,n])=>[n.toUpperCase(),+id])); }
+  const frag=document.createDocumentFragment();
+  for(const n of Object.keys(IT_MAP)){const o=document.createElement("option");o.value=n;frag.appendChild(o);}
+  $("it-stations").replaceChildren(frag);
+}
+function itResolve(txt){
+  const u=txt.trim().toUpperCase(); if(!u||!IT_MAP) return null;
+  if(IT_MAP[u]!=null) return [u,IT_MAP[u]];
+  const keys=Object.keys(IT_MAP);
+  const k=keys.find(x=>x.startsWith(u))||keys.find(x=>x.includes(u));
+  return k?[k,IT_MAP[k]]:null;
+}
+function itPick(){
+  const r=itResolve($("trn-it-q").value);
+  if(!r){alert(T().notFound);return;}
+  trnItName=r[0]; trn.it=r[1]; $("trn-it-q").value=r[0];
+  loadTreni();
+}
+$("trn-it-q").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.target.blur();itPick();} });
+$("trn-it-q").addEventListener("change",itPick);
 
 async function loadTreni(){
   const t=T(), L=$("trn-list"), S=$("trn-sub");
@@ -571,7 +590,7 @@ async function loadTreni(){
         rows.push({num:c[i-2]||"",dest:c[i-1]||"",time:c[i],
           dly:parseInt((raw.match(/\d+/)||[0])[0],10)||0,raw,plat:c[i+2]||""});
       }
-      title=IT_STATIONS[trn.it]||("RFI "+trn.it);
+      title=trnItName;
     }else if(trn.c==="ch"){
       const q=$("trn-q").value.trim()||trn.ch; trn.ch=q;
       const d=await j(`https://transport.opendata.ch/v1/stationboard?station=${encodeURIComponent(q)}&limit=10&type=${trn.mode==="arr"?"arrival":"departure"}`);
@@ -610,7 +629,7 @@ document.querySelectorAll("#p-trn [data-c]").forEach(b=>b.onclick=()=>{
   trn.c=b.dataset.c;
   document.querySelectorAll("#p-trn [data-c]").forEach(x=>x.classList.toggle("on",x===b));
   const it=trn.c==="it";
-  $("trn-sel").style.display=it?"":"none";
+  $("trn-it-q").style.display=it?"":"none";
   $("trn-q").style.display=it?"none":"";
   if(!it) $("trn-q").value=trn[trn.c];
   loadTreni();
@@ -620,20 +639,13 @@ $("trn-mode").onclick=()=>{
   $("trn-mode").textContent=trn.mode==="arr"?T().arr:T().dep;
   loadTreni();
 };
-$("trn-sel").onchange=e=>{
-  if(e.target.value==="x"){
-    const v=prompt("placeId RFI:");
-    if(v&&/^\d+$/.test(v.trim())){trn.it=+v.trim();}
-    else{e.target.value=String(trn.it in IT_STATIONS?trn.it:683);return;}
-  }else trn.it=+e.target.value;
-  loadTreni();
-};
 $("trn-q").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.target.blur();loadTreni();} });
 
 /* ───────────────────────── avvio + cicli ───────────────────────── */
 function schedule(fn,sec,key){ fn(); timers[key]=setInterval(()=>{ if(!document.hidden) fn(); },sec*1000); }
 initMap();
 applyLang();
+loadStazioni();
 schedule(loadMeteo, REFRESH.met, "met");
 schedule(loadRadar, REFRESH.radar,"radar");
 schedule(loadSismi, REFRESH.sis, "sis");
