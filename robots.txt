@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gillis-glitch.github.io/argus/sitemap.xml
