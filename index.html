@@ -380,6 +380,9 @@ async function loadRadar(){
     const d=await j("https://api.rainviewer.com/public/weather-maps.json");
     const rf=d.radar&&d.radar.past;             if(rf&&rf.length) wxPaths.radar=rf[rf.length-1].path;
     const sf=d.satellite&&d.satellite.infrared; if(sf&&sf.length) wxPaths.sat=sf[sf.length-1].path;
+    // se la fonte non offre (più) il satellite, il bottone si nasconde da solo
+    document.querySelector('#layersel [data-m="sat"]').style.display = wxPaths.sat ? "" : "none";
+    if(!wxPaths.sat && wxMode==="sat") wxMode="radar";
     applyWx();
   }catch(e){}
 }
@@ -552,21 +555,28 @@ const WORKER="https://argus-proxy.gillis.workers.dev";
 const IT_STATIONS={683:"Bologna Centrale",942:"Bologna C.le AV",672:"Bologna Borgo Panigale",1709:"Bologna Mazzini"};
 const NET_FLAG={it:"🇮🇹",ch:"🇨🇭",be:"🇧🇪",fi:"🇫🇮"};
 let trn={mode:"dep", net:"it", name:"Bologna Centrale", id:683};
-let IT_MAP=null, FI_MAP=null, FI_NAMES=null;
+let IT_MAP=null, IT_IDX=[], FI_MAP=null, FI_NAMES=null;
 
 async function loadStazioni(){
   try{ IT_MAP=await j("stazioni.json"); }
   catch(e){ IT_MAP=Object.fromEntries(Object.entries(IT_STATIONS).map(([id,n])=>[n.toUpperCase(),+id])); }
+  IT_IDX=Object.entries(IT_MAP).map(([name,id])=>({k:norm(name),name,id}));
   const frag=document.createDocumentFragment();
   for(const n of Object.keys(IT_MAP)){const o=document.createElement("option");o.value=n;frag.appendChild(o);}
   $("it-stations").replaceChildren(frag);
 }
+/* normalizzazione: maiuscole, via accenti/apostrofi — "forlì"≡"FORLI", "sant'anna"≡"SANT ANNA" */
+function norm(s){return s.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/['’.]/g," ").replace(/\s+/g," ").trim();}
+/* tra più candidate vince la stazione principale (Centrale), poi il nome più corto */
+function pickBest(list){
+  if(!list.length) return null;
+  return list.find(e=>/\bCENTRALE\b|\bC LE\b/.test(norm(e.name)))||list.slice().sort((a,b)=>a.name.length-b.name.length)[0];
+}
 function itResolve(txt){
-  const u=txt.trim().toUpperCase(); if(!u||!IT_MAP) return null;
-  if(IT_MAP[u]!=null) return [u,IT_MAP[u]];
-  const keys=Object.keys(IT_MAP);
-  const k=keys.find(x=>x.startsWith(u))||keys.find(x=>x.includes(u));
-  return k?[k,IT_MAP[k]]:null;
+  const u=norm(txt); if(!u||!IT_IDX.length) return null;
+  const ex=IT_IDX.find(e=>e.k===u); if(ex) return {name:ex.name,id:ex.id,tier:0};
+  const b1=pickBest(IT_IDX.filter(e=>e.k.startsWith(u))); if(b1) return {name:b1.name,id:b1.id,tier:1};
+  const b2=pickBest(IT_IDX.filter(e=>e.k.includes(u)));   return b2?{name:b2.name,id:b2.id,tier:2}:null;
 }
 async function fiEnsure(){
   if(FI_MAP) return;
@@ -575,7 +585,7 @@ async function fiEnsure(){
   for(const s of d){
     if(!s.passengerTraffic) continue;
     const nome=s.stationName.replace(/ asema$/i,"");
-    FI_MAP[nome.toUpperCase()]=s.stationShortCode;
+    FI_MAP[norm(nome)]=s.stationShortCode;
     FI_NAMES[s.stationShortCode]=nome;
   }
 }
@@ -585,17 +595,44 @@ function fiResolve(u){
   const k=keys.find(x=>x.startsWith(u))||keys.find(x=>x.includes(u));
   return k?FI_MAP[k]:null;
 }
+/* esonimi: nomi di città in altre lingue → forma canonica della rete giusta */
+const EXO={
+  ZURIGO:"Zürich",ZURICH:"Zürich",
+  GINEVRA:"Genève",GENEVA:"Genève",GINEBRA:"Genève",
+  BASILEA:"Basel",BERNA:"Bern",LOSANNA:"Lausanne",LUCERNA:"Luzern",
+  BRUXELLES:"Brussel",BRUSSELS:"Brussel",BRUSELAS:"Brussel",
+  ANVERSA:"Antwerpen",ANTWERP:"Antwerpen",AMBERES:"Antwerpen",
+  GAND:"Gent",GHENT:"Gent",GANTE:"Gent",
+  LIEGI:"Liège",LIEJA:"Liège",BRUGES:"Brugge",BRUJAS:"Brugge",
+  OSTENDA:"Oostende",OSTEND:"Oostende",
+  MILANO:"Milano Centrale",MILAN:"Milano Centrale",
+  ROMA:"Roma Termini",ROME:"Roma Termini",
+  TORINO:"Torino Porta Nuova",TURIN:"Torino Porta Nuova",
+  NAPOLI:"Napoli Centrale",NAPLES:"Napoli Centrale",NAPOLES:"Napoli Centrale",
+  FIRENZE:"Firenze Santa Maria Novella",FLORENCE:"Firenze Santa Maria Novella",FLORENCIA:"Firenze Santa Maria Novella",
+  VENEZIA:"Venezia Santa Lucia",VENICE:"Venezia Santa Lucia",VENECIA:"Venezia Santa Lucia",
+  GENOVA:"Genova Piazza Principe",GENOA:"Genova Piazza Principe",PADUA:"Padova",
+  "РИМ":"Roma Termini","МИЛАН":"Milano Centrale","ВЕНЕЦИЯ":"Venezia Santa Lucia",
+  "ЦЮРИХ":"Zürich","ЖЕНЕВА":"Genève","БРЮССЕЛЬ":"Brussel","ХЕЛЬСИНКИ":"Helsinki",
+  "罗马":"Roma Termini","米兰":"Milano Centrale","威尼斯":"Venezia Santa Lucia",
+  "苏黎世":"Zürich","日内瓦":"Genève","布鲁塞尔":"Brussel","赫尔辛基":"Helsinki"
+};
 
 /* campo unico: capisce da solo a quale rete appartiene la stazione */
 async function trnSearch(){
-  const t=T(), q=$("trn-q").value.trim();
-  if(!q) return;
+  const t=T(), grezzo=$("trn-q").value.trim();
+  if(!grezzo) return;
+  const q=EXO[norm(grezzo)]||grezzo;                       // esonimi: zurigo→Zürich, rome→Roma Termini…
   $("trn-sub").textContent="…";
-  const it=itResolve(q);                                   // 1) Italia
-  if(it){ trn.net="it"; trn.name=it[0]; trn.id=it[1]; $("trn-q").value=it[0]; return loadTreni(); }
-  try{                                                     // 2) Svizzera
-    const d=await j(`https://transport.opendata.ch/v1/stationboard?station=${encodeURIComponent(q)}&limit=10&type=departure`);
-    if(d.stationboard&&d.stationboard.length){ trn.net="ch"; trn.name=(d.station&&d.station.name)||q; return loadTreni(); }
+  const it=itResolve(q);                                   // 1) Italia (solo match forti)
+  if(it&&it.tier<2){ trn.net="it"; trn.name=it.name; trn.id=it.id; $("trn-q").value=it.name; return loadTreni(); }
+  try{                                                     // 2) Svizzera (ricerca fuzzy dedicata)
+    const loc=await j(`https://transport.opendata.ch/v1/locations?query=${encodeURIComponent(q)}&type=station`);
+    const st=(loc.stations||[]).find(s=>s&&s.id);
+    if(st){
+      const d=await j(`https://transport.opendata.ch/v1/stationboard?id=${encodeURIComponent(st.id)}&limit=10&type=departure`);
+      if(d.stationboard&&d.stationboard.length){ trn.net="ch"; trn.name=(d.station&&d.station.name)||st.name; $("trn-q").value=trn.name; return loadTreni(); }
+    }
   }catch(e){}
   try{                                                     // 3) Belgio
     const d=await j(`https://api.irail.be/liveboard/?station=${encodeURIComponent(q)}&format=json&lang=en&arrdep=departure`);
@@ -603,9 +640,10 @@ async function trnSearch(){
   }catch(e){}
   try{                                                     // 4) Finlandia
     await fiEnsure();
-    const code=fiResolve(q.toUpperCase());
+    const code=fiResolve(norm(q));
     if(code){ trn.net="fi"; trn.id=code; trn.name=FI_NAMES[code]; $("trn-q").value=FI_NAMES[code]; return loadTreni(); }
   }catch(e){}
+  if(it){ trn.net="it"; trn.name=it.name; trn.id=it.id; $("trn-q").value=it.name; return loadTreni(); } // ripiego: match debole italiano
   $("trn-list").innerHTML=`<div class="err">${t.noNet}</div>`;
   $("trn-sub").textContent="—"; lamp("L-trn","","n/d");
 }
@@ -629,12 +667,14 @@ async function loadTreni(){
           dly:parseInt((raw.match(/\d+/)||[0])[0],10)||0,raw,plat:c[i+2]||""});
       }
     }else if(trn.net==="ch"){
+      link=`https://fahrplan.search.ch/${encodeURIComponent(trn.name)}`;
       const d=await j(`https://transport.opendata.ch/v1/stationboard?station=${encodeURIComponent(trn.name)}&limit=10&type=${trn.mode==="arr"?"arrival":"departure"}`);
       rows=(d.stationboard||[]).map(e=>({
         num:(e.category||"")+(e.number||""), dest:e.to||"",
         time:new Date(e.stop.departure||e.stop.arrival).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
         dly:e.stop.delay||0, raw:"", plat:e.stop.platform||""}));
     }else if(trn.net==="be"){
+      link="https://www.belgiantrain.be/en/travel-info/current/search-by-station";
       const d=await j(`https://api.irail.be/liveboard/?station=${encodeURIComponent(trn.name)}&format=json&lang=en&arrdep=${trn.mode==="arr"?"arrival":"departure"}`);
       const list=trn.mode==="arr"?(d.arrivals&&d.arrivals.arrival):(d.departures&&d.departures.departure);
       rows=(list||[]).map(e=>({
@@ -642,6 +682,7 @@ async function loadTreni(){
         time:new Date((+e.time)*1000).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
         dly:Math.round((+e.delay||0)/60), raw:"", plat:e.platform&&e.platform!=="?"?e.platform:""}));
     }else{ /* fi */
+      link="https://www.vr.fi/en";
       const dep=trn.mode!=="arr";
       const d=await j(`https://rata.digitraffic.fi/api/v1/live-trains/station/${trn.id}?arrived_trains=0&departed_trains=0&arriving_trains=${dep?0:15}&departing_trains=${dep?15:0}&include_nonstopping=false`);
       const adesso=Date.now();
