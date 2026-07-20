@@ -599,7 +599,7 @@ function fiResolve(u){
 const EXO={
   ZURIGO:"Zürich",ZURICH:"Zürich",
   GINEVRA:"Genève",GENEVA:"Genève",GINEBRA:"Genève",
-  BASILEA:"Basel",BERNA:"Bern",LOSANNA:"Lausanne",LUCERNA:"Luzern",
+  BASILEA:"Basel",BERNA:"Bern",BERN:"Bern",BASEL:"Basel",GENT:"Gent",LOSANNA:"Lausanne",LUCERNA:"Luzern",
   BRUXELLES:"Brussel",BRUSSELS:"Brussel",BRUSELAS:"Brussel",
   ANVERSA:"Antwerpen",ANTWERP:"Antwerpen",AMBERES:"Antwerpen",
   GAND:"Gent",GHENT:"Gent",GANTE:"Gent",
@@ -622,10 +622,12 @@ const EXO={
 async function trnSearch(){
   const t=T(), grezzo=$("trn-q").value.trim();
   if(!grezzo) return;
-  const q=EXO[norm(grezzo)]||grezzo;                       // esonimi: zurigo→Zürich, rome→Roma Termini…
+  const eso=EXO[norm(grezzo)];                             // esonimi: zurigo→Zürich, rome→Roma Termini…
+  const q=eso||grezzo;
   $("trn-sub").textContent="…";
-  const it=itResolve(q);                                   // 1) Italia (solo match forti)
-  if(it&&it.tier<2){ trn.net="it"; trn.name=it.name; trn.id=it.id; $("trn-q").value=it.name; return loadTreni(); }
+  const it=itResolve(q);                                   // 1) Italia
+  const sogliaIT=eso?1:2;                                  // con esonimo l'Italia vince solo per nome esatto
+  if(it&&it.tier<sogliaIT){ trn.net="it"; trn.name=it.name; trn.id=it.id; $("trn-q").value=it.name; return loadTreni(); }
   try{                                                     // 2) Svizzera (ricerca fuzzy dedicata)
     const loc=await j(`https://transport.opendata.ch/v1/locations?query=${encodeURIComponent(q)}&type=station`);
     const st=(loc.stations||[]).find(s=>s&&s.id);
@@ -643,7 +645,7 @@ async function trnSearch(){
     const code=fiResolve(norm(q));
     if(code){ trn.net="fi"; trn.id=code; trn.name=FI_NAMES[code]; $("trn-q").value=FI_NAMES[code]; return loadTreni(); }
   }catch(e){}
-  if(it){ trn.net="it"; trn.name=it.name; trn.id=it.id; $("trn-q").value=it.name; return loadTreni(); } // ripiego: match debole italiano
+  if(it&&!eso){ trn.net="it"; trn.name=it.name; trn.id=it.id; $("trn-q").value=it.name; return loadTreni(); } // ripiego italiano (mai per gli esonimi)
   $("trn-list").innerHTML=`<div class="err">${t.noNet}</div>`;
   $("trn-sub").textContent="—"; lamp("L-trn","","n/d");
 }
