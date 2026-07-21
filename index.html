@@ -719,7 +719,6 @@ async function loadTreni(){
       }
       rows.sort((a,b)=>a._ts-b._ts);
     }else{ /* wo — Transitous/MOTIS, tabellone di qualunque stazione al mondo */
-      link="https://transitous.org/";
       const arr=trn.mode==="arr";
       const modeQ=MM[trn.mm]?`&mode=${MM[trn.mm]}`:"";
       const d=await j(`${TRANSITOUS}/api/v6/stoptimes?stopId=${encodeURIComponent(trn.id)}&n=10&arriveBy=${arr}${modeQ}&language=${LANG}`);
@@ -767,8 +766,8 @@ async function trnFromPos(){
     const g=await j(`${TRANSITOUS}/api/v1/reverse-geocode?place=${POS.lat},${POS.lon}&type=STOP&language=${LANG}`);
     const arr=(Array.isArray(g)?g:[]).filter(x=>x&&x.id);
     if(!arr.length) return;
-    const main=arr.slice(0,6).find(x=>/centrale|termini|hbf|hauptbahnhof|centraal|central|station|中央/i.test(x.name||""));
-    const m=main||arr[0];                                    // hub principale nelle vicinanze, altrimenti il più vicino
+    // tra le fermate vicine scegli la più importante: una stazione principale batte una fermata bus
+    const m=arr.slice().sort((a,b)=>(b.importance||0)-(a.importance||0))[0];
     trn.net="wo"; trn.id=m.id; trn.name=m.name; trn.mm="all";
     document.querySelectorAll("#trn-modes button").forEach(x=>x.classList.toggle("on",x.dataset.mm==="all"));
     $("trn-q").value=m.name;
@@ -780,12 +779,12 @@ async function loadHubs(){
   try{
     if(!hubLayer) return;
     hubLayer.clearLayers();
-    const R=12000, la=POS.lat, lo=POS.lon;
-    const q=`[out:json][timeout:20];(`+
-      `nwr["aeroway"="aerodrome"](around:${R},${la},${lo});`+
-      `nwr["amenity"="ferry_terminal"](around:${R},${la},${lo});`+
-      `nwr["harbour"="yes"](around:${R},${la},${lo});`+
-      `);out center 25;`;
+    const la=POS.lat, lo=POS.lon;
+    const q=`[out:json][timeout:25];(`+
+      `nwr["aeroway"="aerodrome"]["iata"](around:60000,${la},${lo});`+   /* aeroporti veri, spesso lontani dal centro */
+      `nwr["amenity"="ferry_terminal"](around:18000,${la},${lo});`+
+      `nwr["harbour"="yes"](around:18000,${la},${lo});`+
+      `);out center 40;`;
     const d=await j(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(q)}`);
     for(const el of (d.elements||[])){
       const la2=el.lat??(el.center&&el.center.lat), lo2=el.lon??(el.center&&el.center.lon);
