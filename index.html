@@ -35,6 +35,7 @@
   .selrow button{background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--muted);padding:7px 10px;font-size:12px;font-family:var(--mono);cursor:pointer}
   .selrow button.on{color:var(--meteo);border-color:var(--meteo)}
   .hubpin{background:none;border:none;font-size:17px;line-height:22px;text-align:center}
+  #trn-hubs button{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
   #annunciator{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:12px}
   .lamp{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 4px;text-align:center;cursor:pointer}
@@ -156,6 +157,7 @@
     </div>
     <input id="trn-q" type="text" list="it-stations" value="Bologna Centrale" enterkeyhint="search">
     <datalist id="it-stations"></datalist>
+    <div class="selrow" id="trn-hubs" style="display:none;margin-top:8px"></div>
     <div class="sub" id="trn-sub" style="margin-top:8px">…</div>
     <div class="list" id="trn-list"></div>
   </section>
@@ -564,7 +566,7 @@ const WORKER="https://argus-proxy.gillis.workers.dev";
 const IT_STATIONS={683:"Bologna Centrale",942:"Bologna C.le AV",672:"Bologna Borgo Panigale",1709:"Bologna Mazzini"};
 const NET_FLAG={it:"🇮🇹",ch:"🇨🇭",be:"🇧🇪",fi:"🇫🇮",wo:"🌍"};
 const TRANSITOUS="https://api.transitous.org";
-let trn={mode:"dep", net:"it", name:"Bologna Centrale", id:683, mm:"all"};
+let trn={mode:"dep", net:"it", name:"Bologna Centrale", id:683, mm:"all", hubs:[]};
 const MM={all:"",rail:"RAIL",bus:"BUS,COACH",ferry:"FERRY"};   // filtro modi per la rete "wo" (Transitous)
 let IT_MAP=null, IT_IDX=[], FI_MAP=null, FI_NAMES=null;
 
@@ -660,7 +662,7 @@ async function trnSearch(){
   try{                                                     // 5) Mondo — Transitous/MOTIS, copre tutto il resto (GTFS/GTFS-RT globale)
     const g=await j(`${TRANSITOUS}/api/v1/geocode?text=${encodeURIComponent(q)}&type=STOP&language=${LANG}`);
     const m=(Array.isArray(g)?g:[]).find(x=>x&&x.id);   // geocode è già ordinato per score
-    if(m){ trn.net="wo"; trn.id=m.id; trn.name=m.name; $("trn-q").value=m.name; return loadTreni(); }
+    if(m){ trn.net="wo"; trn.hubs=[]; trn.id=m.id; trn.name=m.name; $("trn-q").value=m.name; return loadTreni(); }
   }catch(e){}
   $("trn-list").innerHTML=`<div class="err">${t.noNet}</div>`;
   $("trn-sub").textContent="—"; lamp("L-trn","","n/d");
@@ -735,6 +737,12 @@ async function loadTreni(){
     }
     rows=rows.slice(0,10);
     $("trn-modes").style.display = trn.net==="wo" ? "flex" : "none";
+    const HB=$("trn-hubs");
+    if(trn.net==="wo" && trn.hubs.length>1){
+      HB.style.display="flex";
+      HB.innerHTML=trn.hubs.map((h,i)=>`<button data-hi="${i}"${h.id===trn.id?' class="on"':''} title="${(h.name||'').replace(/"/g,'&quot;')}">${(h.name||'').replace(/</g,'&lt;')}</button>`).join("");
+      HB.querySelectorAll("button").forEach(b=>b.onclick=()=>{const h=trn.hubs[+b.dataset.hi]; trn.id=h.id; trn.name=h.name; $("trn-q").value=h.name; loadTreni();});
+    } else HB.style.display="none";
     $("trn-net").textContent=NET_FLAG[trn.net]||"";
     S.innerHTML=`${NET_FLAG[trn.net]||""} ${trn.name}`+(link?` · <a href="${link}" target="_blank" rel="noopener">${t.trnLink}</a>`:"");
     L.innerHTML=rows.map(r=>{
@@ -763,11 +771,14 @@ $("trn-q").addEventListener("change",trnSearch);
    NB: aggiorna solo il tabellone; il campo qui sopra resta consultabile in modo indipendente. */
 async function trnFromPos(){
   try{
-    const g=await j(`${TRANSITOUS}/api/v1/reverse-geocode?place=${POS.lat},${POS.lon}&type=STOP&language=${LANG}`);
-    const arr=(Array.isArray(g)?g:[]).filter(x=>x&&x.id);
+    const g=await j(`${TRANSITOUS}/api/v1/reverse-geocode?place=${POS.lat},${POS.lon}&type=STOP&numResults=25&language=${LANG}`);
+    const arr=(Array.isArray(g)?g:[]).filter(x=>x&&x.id)
+              .sort((a,b)=>(b.importance||0)-(a.importance||0));   // più grande/trafficato in testa
     if(!arr.length) return;
-    // tra le fermate vicine scegli la più importante: una stazione principale batte una fermata bus
-    const m=arr.slice().sort((a,b)=>(b.importance||0)-(a.importance||0))[0];
+    const seen=new Set(); trn.hubs=[];
+    for(const x of arr){ const k=(x.name||"").toLowerCase(); if(seen.has(k))continue; seen.add(k);
+      trn.hubs.push({id:x.id,name:x.name}); if(trn.hubs.length>=6) break; }   // hub principale + fino a 5 alternative
+    const m=trn.hubs[0];
     trn.net="wo"; trn.id=m.id; trn.name=m.name; trn.mm="all";
     document.querySelectorAll("#trn-modes button").forEach(x=>x.classList.toggle("on",x.dataset.mm==="all"));
     $("trn-q").value=m.name;
