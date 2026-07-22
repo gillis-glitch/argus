@@ -137,6 +137,7 @@
   <button data-dom="terra"></button>
   <button data-dom="cielo"></button>
   <button data-dom="trasp"></button>
+  <button data-dom="mercati"></button>
 </div>
 
 <div id="grid">
@@ -197,6 +198,19 @@
   <section class="s-pc" id="p-pc" data-dom="terra" style="grid-column:1/-1">
     <h2><span id="h-pc"></span> <time id="t-pc"></time></h2>
     <div class="sub" id="pc-body">…</div>
+  <section class="s-cry" id="p-cry" data-dom="mercati">
+    <h2><span id="h-cry"></span> <time id="t-cry"></time></h2>
+    <div class="list" id="cry-list"><div class="err">…</div></div>
+  </section>
+
+  <section class="s-fx" id="p-fx" data-dom="mercati">
+    <h2><span id="h-fx"></span> <time id="t-fx"></time></h2>
+    <div class="list" id="fx-list"><div class="err">…</div></div>
+  </section>
+
+  <section class="s-com" id="p-com" data-dom="mercati">
+    <h2><span id="h-com"></span> <time id="t-com"></time></h2>
+    <div class="list" id="com-list"><div class="err">…</div></div>
   </section>
 </div>
 
@@ -231,7 +245,7 @@ it:{sub:"IL MONDO IN TEMPO REALE",search:"Cerca una località… (Invio)",here:"
   pcMax:"criticità massima",pcZones:"zone interessate",pcLink:"Dettaglio ufficiale ↗",
   pcNA:"Bollettino automatico non disponibile — consulta il",pcOff:"bollettino ufficiale ↗",
   geoErr:"Posizione non disponibile: controlla i permessi del browser.",notFound:"Località non trovata.",searchErr:"Ricerca non disponibile al momento.",myArea:"La tua zona",
-  hTrn:"Trasporti — tabellone",mmAll:"Tutti",domAmb:"Ambiente",domTerra:"Terra e rischi",domCielo:"Cielo e spazio",domTrasp:"Trasporti",dep:"Partenze ⇄",arr:"Arrivi ⇄",trnPh:"Stazione… (Invio)",other:"Altra stazione (codice RFI)…",onTime:"in orario",trnLink:"tabellone ufficiale ↗",noNet:"Nessuna stazione trovata per questa ricerca.",
+  hTrn:"Trasporti — tabellone",mmAll:"Tutti",domAmb:"Ambiente",domTerra:"Terra e rischi",domCielo:"Cielo e spazio",domTrasp:"Trasporti",domMerc:"Mercati",hCry:"Cripto — prezzi",hFx:"Valute — cambio",hCom:"Materie prime",dep:"Partenze ⇄",arr:"Arrivi ⇄",trnPh:"Stazione… (Invio)",other:"Altra stazione (codice RFI)…",onTime:"in orario",trnLink:"tabellone ufficiale ↗",noNet:"Nessuna stazione trovata per questa ricerca.",
   ft:"Pagina statica senza server: i dati sono richiesti direttamente dal tuo browser alle fonti. Statistiche visite anonime, senza cookie.",
   wmo:wm(["sereno","quasi sereno","parzialmente nuvoloso","coperto","nebbia","nebbia con brina","pioviggine debole","pioviggine","pioviggine intensa","pioggia debole","pioggia","pioggia forte","pioggia gelata","pioggia gelata forte","neve debole","neve","neve forte","nevischio","rovesci deboli","rovesci","rovesci violenti","rovesci di neve","rovesci di neve forti","temporale","temporale con grandine","temporale forte con grandine"])},
 en:{sub:"THE WORLD IN REAL TIME",search:"Search a place… (Enter)",here:"📍 Here",
@@ -248,7 +262,7 @@ en:{sub:"THE WORLD IN REAL TIME",search:"Search a place… (Enter)",here:"📍 H
   pcMax:"max criticality",pcZones:"zones affected",pcLink:"Official detail ↗",
   pcNA:"Automatic bulletin unavailable — see the",pcOff:"official bulletin ↗",
   geoErr:"Location unavailable: check browser permissions.",notFound:"Place not found.",searchErr:"Search unavailable right now.",myArea:"Your area",
-  hTrn:"Transit — departures board",mmAll:"All",domAmb:"Environment",domTerra:"Earth & risks",domCielo:"Sky & space",domTrasp:"Transit",dep:"Departures ⇄",arr:"Arrivals ⇄",trnPh:"Station… (Enter)",other:"Other station (RFI code)…",onTime:"on time",trnLink:"official board ↗",noNet:"No station found for this search.",
+  hTrn:"Transit — departures board",mmAll:"All",domAmb:"Environment",domTerra:"Earth & risks",domCielo:"Sky & space",domTrasp:"Transit",domMerc:"Markets",hCry:"Crypto — prices",hFx:"Currencies — FX",hCom:"Commodities",dep:"Departures ⇄",arr:"Arrivals ⇄",trnPh:"Station… (Enter)",other:"Other station (RFI code)…",onTime:"on time",trnLink:"official board ↗",noNet:"No station found for this search.",
   ft:"Static page, no server: your browser fetches data straight from the sources. Anonymous, cookie-free visit stats.",
   wmo:wm(["clear","mostly clear","partly cloudy","overcast","fog","rime fog","light drizzle","drizzle","heavy drizzle","light rain","rain","heavy rain","freezing rain","heavy freezing rain","light snow","snow","heavy snow","snow grains","light showers","showers","violent showers","snow showers","heavy snow showers","thunderstorm","thunderstorm with hail","severe thunderstorm with hail"])},
 es:{sub:"EL MUNDO EN TIEMPO REAL",search:"Busca un lugar… (Intro)",here:"📍 Aquí",
@@ -265,7 +279,7 @@ es:{sub:"EL MUNDO EN TIEMPO REAL",search:"Busca un lugar… (Intro)",here:"📍 
   pcMax:"criticidad máxima",pcZones:"zonas afectadas",pcLink:"Detalle oficial ↗",
   pcNA:"Boletín automático no disponible — consulta el",pcOff:"boletín oficial ↗",
   geoErr:"Ubicación no disponible: revisa los permisos del navegador.",notFound:"Lugar no encontrado.",searchErr:"Búsqueda no disponible por ahora.",myArea:"Tu zona",
-  hTrn:"Transporte — panel",mmAll:"Todos",domAmb:"Ambiente",domTerra:"Tierra y riesgos",domCielo:"Cielo y espacio",domTrasp:"Transporte",dep:"Salidas ⇄",arr:"Llegadas ⇄",trnPh:"Estación… (Intro)",other:"Otra estación (código RFI)…",onTime:"puntual",trnLink:"panel oficial ↗",noNet:"No se encontró ninguna estación para esta búsqueda.",
+  hTrn:"Transporte — panel",mmAll:"Todos",domAmb:"Ambiente",domTerra:"Tierra y riesgos",domCielo:"Cielo y espacio",domTrasp:"Transporte",domMerc:"Mercados",hCry:"Cripto — precios",hFx:"Divisas — cambio",hCom:"Materias primas",dep:"Salidas ⇄",arr:"Llegadas ⇄",trnPh:"Estación… (Intro)",other:"Otra estación (código RFI)…",onTime:"puntual",trnLink:"panel oficial ↗",noNet:"No se encontró ninguna estación para esta búsqueda.",
   ft:"Página estática, sin servidor: tu navegador pide los datos directamente a las fuentes. Estadísticas de visitas anónimas, sin cookies.",
   wmo:wm(["despejado","mayormente despejado","parcialmente nublado","cubierto","niebla","niebla con escarcha","llovizna débil","llovizna","llovizna intensa","lluvia débil","lluvia","lluvia fuerte","lluvia helada","lluvia helada fuerte","nieve débil","nieve","nieve fuerte","cinarra","chubascos débiles","chubascos","chubascos violentos","chubascos de nieve","chubascos de nieve fuertes","tormenta","tormenta con granizo","tormenta fuerte con granizo"])},
 ru:{sub:"МИР В РЕАЛЬНОМ ВРЕМЕНИ",search:"Найдите место… (Enter)",here:"📍 Здесь",
@@ -282,7 +296,7 @@ ru:{sub:"МИР В РЕАЛЬНОМ ВРЕМЕНИ",search:"Найдите ме�
   pcMax:"макс. уровень",pcZones:"затронутых зон",pcLink:"Официальные данные ↗",
   pcNA:"Автоматический бюллетень недоступен — см.",pcOff:"официальный бюллетень ↗",
   geoErr:"Геопозиция недоступна: проверьте разрешения браузера.",notFound:"Место не найдено.",searchErr:"Поиск сейчас недоступен.",myArea:"Ваш район",
-  hTrn:"Транспорт — табло",mmAll:"Все",domAmb:"Среда",domTerra:"Земля и риски",domCielo:"Небо и космос",domTrasp:"Транспорт",dep:"Отправление ⇄",arr:"Прибытие ⇄",trnPh:"Станция… (Enter)",other:"Другая станция (код RFI)…",onTime:"по расписанию",trnLink:"официальное табло ↗",noNet:"Станция по этому запросу не найдена.",
+  hTrn:"Транспорт — табло",mmAll:"Все",domAmb:"Среда",domTerra:"Земля и риски",domCielo:"Небо и космос",domTrasp:"Транспорт",domMerc:"Рынки",hCry:"Криптовалюты — цены",hFx:"Валюты — курс",hCom:"Сырьё",dep:"Отправление ⇄",arr:"Прибытие ⇄",trnPh:"Станция… (Enter)",other:"Другая станция (код RFI)…",onTime:"по расписанию",trnLink:"официальное табло ↗",noNet:"Станция по этому запросу не найдена.",
   ft:"Статическая страница без сервера: браузер запрашивает данные напрямую у источников. Анонимная статистика посещений, без cookie.",
   wmo:wm(["ясно","малооблачно","переменная облачность","пасмурно","туман","туман с изморозью","слабая морось","морось","сильная морось","слабый дождь","дождь","сильный дождь","ледяной дождь","сильный ледяной дождь","слабый снег","снег","сильный снег","снежные зёрна","слабые ливни","ливни","сильные ливни","снежные ливни","сильные снежные ливни","гроза","гроза с градом","сильная гроза с градом"])},
 zh:{sub:"实时世界",search:"搜索地点…（回车）",here:"📍 此处",
@@ -299,7 +313,7 @@ zh:{sub:"实时世界",search:"搜索地点…（回车）",here:"📍 此处",
   pcMax:"最高等级",pcZones:"个受影响区域",pcLink:"官方详情 ↗",
   pcNA:"自动公报不可用——请查看",pcOff:"官方公报 ↗",
   geoErr:"无法获取位置：请检查浏览器权限。",notFound:"未找到该地点。",searchErr:"搜索暂不可用。",myArea:"您的区域",
-  hTrn:"交通 — 时刻牌",mmAll:"全部",domAmb:"环境",domTerra:"地球与风险",domCielo:"天空与太空",domTrasp:"交通",dep:"出发 ⇄",arr:"到达 ⇄",trnPh:"车站…（回车）",other:"其他车站（RFI代码）…",onTime:"准点",trnLink:"官方时刻牌 ↗",noNet:"未找到匹配的车站。",
+  hTrn:"交通 — 时刻牌",mmAll:"全部",domAmb:"环境",domTerra:"地球与风险",domCielo:"天空与太空",domTrasp:"交通",domMerc:"市场",hCry:"加密货币 — 价格",hFx:"汇率",hCom:"大宗商品",dep:"出发 ⇄",arr:"到达 ⇄",trnPh:"车站…（回车）",other:"其他车站（RFI代码）…",onTime:"准点",trnLink:"官方时刻牌 ↗",noNet:"未找到匹配的车站。",
   ft:"静态页面，无服务器：数据由您的浏览器直接向来源请求。匿名访问统计，不使用Cookie。",
   wmo:wm(["晴","大部晴朗","局部多云","阴天","雾","雾凇","小毛毛雨","毛毛雨","强毛毛雨","小雨","雨","大雨","冻雨","强冻雨","小雪","雪","大雪","米雪","小阵雨","阵雨","强阵雨","阵雪","强阵雪","雷暴","雷暴伴冰雹","强雷暴伴冰雹"])}
 };
@@ -310,7 +324,7 @@ const T=()=>I18N[LANG];
 
 /* ───────────────────────── stato ───────────────────────── */
 let POS = {lat:44.4949, lon:11.3426, name:"Bologna"};
-const REFRESH = {aer:30, met:600, sis:120, spc:600, radar:300, pc:1800, trn:90};
+const REFRESH = {aer:30, met:600, sis:120, spc:600, radar:300, pc:1800, trn:90, cry:120, fx:3600, com:300};
 const timers = {};
 let map, radarLayer, quakeLayer, planeLayer, centerMarker, hubLayer;
 
@@ -353,6 +367,8 @@ function applyLang(){
   document.querySelector('#dombar [data-dom="terra"]').textContent=t.domTerra;
   document.querySelector('#dombar [data-dom="cielo"]').textContent=t.domCielo;
   document.querySelector('#dombar [data-dom="trasp"]').textContent=t.domTrasp;
+  document.querySelector('#dombar [data-dom="mercati"]').textContent=t.domMerc;
+  $("h-cry").textContent=t.hCry; $("h-fx").textContent=t.hFx; $("h-com").textContent=t.hCom;
   $("k-feels").textContent=t.feels; $("k-wind").textContent=t.wind; $("k-hum").textContent=t.hum;
   $("k-rain").textContent=t.rain3; $("k-swind").textContent=t.swind; $("k-sdens").textContent=t.sdens;
   $("ft").textContent=t.ft;
@@ -842,6 +858,57 @@ function schedule(fn,sec,key){ fn(); timers[key]=setInterval(()=>{ if(!document.
 initMap();
 applyLang();
 loadStazioni();
+/* ───────────────────────── mercati (crypto + FX, no-key/CORS) ───────────────────────── */
+async function loadCrypto(){
+  try{
+    const ids="bitcoin,ethereum,solana", NAMES={bitcoin:"BTC",ethereum:"ETH",solana:"SOL"};
+    const d=await j(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=eur&include_24hr_change=true`);
+    $("cry-list").innerHTML=Object.keys(NAMES).map(k=>{
+      const o=d[k]||{}, ch=o.eur_24h_change||0, col=ch>=0?"var(--ok)":"var(--seismic)";
+      const price=o.eur!=null?new Intl.NumberFormat(LANG,{style:"currency",currency:"EUR",maximumFractionDigits:o.eur<10?4:0}).format(o.eur):"—";
+      return `<div class="row"><span class="mono" style="font-weight:700">${NAMES[k]}</span>`+
+             `<span style="flex:1"></span><span class="mono">${price}</span>`+
+             `<span class="mono" style="color:${col};min-width:60px;text-align:right">${(ch>=0?"+":"")+ch.toFixed(1)}%</span></div>`;
+    }).join("");
+    stamp("t-cry");
+  }catch(e){ $("cry-list").innerHTML=`<div class="err">${T().err}</div>`; }
+}
+async function loadFx(){
+  try{
+    const d=await j("https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,GBP,CHF,JPY");
+    const r=d.rates||{};
+    $("fx-list").innerHTML=Object.keys(r).map(k=>{
+      const dec=k==="JPY"?1:4;
+      return `<div class="row"><span class="mono" style="font-weight:700">EUR/${k}</span>`+
+             `<span style="flex:1"></span><span class="mono">${r[k].toFixed(dec)}</span></div>`;
+    }).join("")+`<div class="sub" style="margin-top:6px">BCE · ${d.date||""}</div>`;
+    stamp("t-fx");
+  }catch(e){ $("fx-list").innerHTML=`<div class="err">${T().err}</div>`; }
+}
+async function loadCom(){
+  try{
+    const SY=[["Brent","BZ=F","$/bbl"],["WTI","CL=F","$/bbl"],["Gas nat.","NG=F","$/MMBtu"]];
+    const out=[];
+    for(const [name,sym,unit] of SY){
+      try{
+        const d=await j(`${WORKER}/yf/v8/finance/chart/${sym}`);
+        const m=d&&d.chart&&d.chart.result&&d.chart.result[0]&&d.chart.result[0].meta;
+        if(!m||m.regularMarketPrice==null) continue;
+        const p=m.regularMarketPrice, prev=m.chartPreviousClose??m.previousClose??p;
+        out.push({name,unit,p,ch:prev?(p-prev)/prev*100:0});
+      }catch(e){}
+    }
+    $("com-list").innerHTML=out.map(o=>{
+      const col=o.ch>=0?"var(--ok)":"var(--seismic)";
+      return `<div class="row"><span class="mono" style="font-weight:700">${o.name}</span>`+
+             `<span style="flex:1;color:var(--muted);font-size:11px">${o.unit}</span>`+
+             `<span class="mono">${o.p.toLocaleString(LANG,{maximumFractionDigits:2})}</span>`+
+             `<span class="mono" style="color:${col};min-width:60px;text-align:right">${(o.ch>=0?"+":"")+o.ch.toFixed(1)}%</span></div>`;
+    }).join("")||`<div class="err">${T().err}</div>`;
+    stamp("t-com");
+  }catch(e){ $("com-list").innerHTML=`<div class="err">${T().err}</div>`; }
+}
+
 schedule(loadMeteo, REFRESH.met, "met");
 schedule(loadRadar, REFRESH.radar,"radar");
 schedule(loadSismi, REFRESH.sis, "sis");
@@ -849,6 +916,9 @@ schedule(loadAerei, REFRESH.aer, "aer");
 schedule(loadSpace, REFRESH.spc, "spc");
 schedule(loadPC,    REFRESH.pc,  "pc");
 schedule(loadTreni, REFRESH.trn, "trn");
+schedule(loadCrypto,REFRESH.cry, "cry");
+schedule(loadFx,    REFRESH.fx,  "fx");
+schedule(loadCom,   REFRESH.com, "com");
 </script>
 <script data-goatcounter="https://argus.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
